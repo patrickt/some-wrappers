@@ -22,11 +22,12 @@ source-repository head
 
 library
   hs-source-dirs:      src
-  exposed-modules:     SomeWrappers
-                       
+  exposed-modules:     Data.Some
+
 
   build-depends:       base ^>= 4.13.0.0
-                     
+                     , aeson ^>= 1.4
+
 
   ghc-options:         -Wall
                        -Wincomplete-uni-patterns
