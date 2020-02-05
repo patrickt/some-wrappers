@@ -42,6 +42,7 @@ instance ToJSON (Some1 ToJSON1 ToJSON) where
   toJSON (Some1 a) = toJSON1 a
   toEncoding (Some1 a) = toEncoding1 a
 
+
 -- | A polykinded wrapper around a 'Proxy'. Useful when operating on singleton types.
 data SSome (c :: k -> Constraint) where
   SSome :: c a => Proxy a -> SSome c
