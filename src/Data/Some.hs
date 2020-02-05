@@ -1,5 +1,11 @@
-{-# LANGUAGE ConstraintKinds, FlexibleInstances, GADTs, KindSignatures, PolyKinds, RankNTypes, TypeFamilies #-}
--- | This module provides 'Some', 'Some', and 'SSome', which are GADT wrappers
+{-# LANGUAGE ConstraintKinds #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE PolyKinds #-}
+{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE TypeFamilies #-}
+-- | This module provides 'Some' and 'Some1', which are GADT wrappers
 -- providing a convenient way to create a polymorphic type constrained by some
 -- provided typeclass reified in the signature.
 --
@@ -13,9 +19,6 @@
 module Data.Some
   ( Some (..)
   , Some1 (..)
-  , SSome (..)
-  , SomeJSON
-  , Forall
   ) where
 
 import Data.Aeson
@@ -26,7 +29,7 @@ import Data.Proxy
 data Some (c :: Type -> Constraint) where
   Some :: c a => a -> Some c
 
-instance ToJSON (Some JSON) where
+instance ToJSON (Some ToJSON) where
   toJSON (Some a) = toJSON a
   toEncoding (Some a) = toEncoding a
 
@@ -35,17 +38,22 @@ instance ToJSON (Some JSON) where
 -- The first constraint represents those rendered on the container @f@,
 -- and the second represents those on the constituent type @a@. If you
 -- don't need any constraints on @a@, use 'Forall'.
-data Some1 (c :: (Type -> Type) -> Constraint) (d :: Type -> Constraint) where
-  Some1 :: forall c d f a . (c f, d a) => f a -> Some1 c d
+--
+-- The extra @k@ parameter to the constructor is to allow the kind of
+-- the parameterized type to be poly-kinded in the input type. This
+-- allows you to pass @(~) Proxy@ as the first argument and have some
+-- type-level function as the second.
+data Some1 c d where
+  Some1 ::
+    forall k
+      (c :: (k -> Type) -> Constraint)
+      (d :: k -> Constraint)
+      (f :: k -> Type)
+      (a :: k) .
+    (c f, d a)
+    => f a
+    -> Some1 c d
 
 instance ToJSON (Some1 ToJSON1 ToJSON) where
   toJSON (Some1 a) = toJSON1 a
   toEncoding (Some1 a) = toEncoding1 a
-
-
--- | A polykinded wrapper around a 'Proxy'. Useful when operating on singleton types.
-data SSome (c :: k -> Constraint) where
-  SSome :: c a => Proxy a -> SSome c
-
-class Forall a
-instance Forall a
