@@ -1,0 +1,42 @@
+cabal-version:       2.0
+name:                some-wrappers
+version:             0.0.0.0
+synopsis:            Poly-kinded existential wrappers for type classes and singletons.
+description:         Poly-kinded existential wrappers for type classes and singletons.
+homepage:            https://github.com/patrickt/some-wrappers
+bug-reports:         https://github.com/patrickt/some-wrappers/issues
+license:             MIT
+license-file:        LICENSE
+author:              Patrick Thomson
+maintainer:          patrick.william.thomson@gmail.com
+copyright:           2020 Patrick Thomson
+category:            Data
+build-type:          Simple
+extra-doc-files:     README.md
+                   , CHANGELOG.md
+tested-with:         GHC == 8.8.1
+
+source-repository head
+  type:                git
+  location:            https://github.com/patrickt/some-wrappers.git
+
+library
+  hs-source-dirs:      src
+  exposed-modules:     SomeWrappers
+                       
+
+  build-depends:       base ^>= 4.13.0.0
+                     
+
+  ghc-options:         -Wall
+                       -Wincomplete-uni-patterns
+                       -Wincomplete-record-updates
+                       -Wcompat
+                       -Widentities
+                       -Wredundant-constraints
+                       -fhide-source-paths
+                       -Wmissing-export-lists
+                       -Wpartial-fields
+                       -Wmissing-deriving-strategies
+
+  default-language:    Haskell2010
